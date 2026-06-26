@@ -7,8 +7,6 @@ import { templates } from '@/data/templates'
 interface EmailComposerProps {
   prospect: Prospect
   selectedTemplateId: string | undefined
-  customLine: string
-  onCustomLineChange: (val: string) => void
   copied: boolean
   setCopied: (v: boolean) => void
   videoFilename: string | null
@@ -17,7 +15,6 @@ interface EmailComposerProps {
 function composeEmail(
   templateId: string | undefined,
   prospect: Prospect,
-  customLine: string,
   videoFilename: string | null
 ): { subject: string; body: string } | null {
   const template = templates.find((t) => t.id === templateId)
@@ -35,7 +32,7 @@ function composeEmail(
       .replace(/\[Company\]/g, company)
       .replace(/\[FirstName\]/g, firstName)
       .replace(/\[Sender\]/g, 'Matt')
-      .replace(/\[CUSTOM_LINE\]/g, customLine || '[Write a custom line above...]')
+      .replace(/\[CUSTOM_LINE\]/g, '[Add a personal line about their content here...]')
       .replace(/\[VIDEO\]/g, videoLine)
 
   return {
@@ -47,13 +44,11 @@ function composeEmail(
 export default function EmailComposer({
   prospect,
   selectedTemplateId,
-  customLine,
-  onCustomLineChange,
   copied,
   setCopied,
   videoFilename,
 }: EmailComposerProps) {
-  const derived = composeEmail(selectedTemplateId, prospect, customLine, videoFilename)
+  const derived = composeEmail(selectedTemplateId, prospect, videoFilename)
 
   const [editedSubject, setEditedSubject] = useState(derived?.subject ?? '')
   const [editedBody, setEditedBody] = useState(derived?.body ?? '')
@@ -69,14 +64,14 @@ export default function EmailComposer({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTemplateId, prospect])
 
-  // When customLine or video changes and user hasn't manually edited, keep in sync
+  // When the video changes and user hasn't manually edited, keep in sync
   useEffect(() => {
     if (!dirty && derived) {
       setEditedSubject(derived.subject)
       setEditedBody(derived.body)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customLine, videoFilename])
+  }, [videoFilename])
 
   async function handleCopy() {
     const text = `Subject: ${editedSubject}\n\n${editedBody}`
@@ -96,24 +91,6 @@ export default function EmailComposer({
 
   return (
     <div>
-      <div style={{ fontSize: '11px', fontWeight: 600, color: '#A8A29E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
-        Custom line
-      </div>
-      <input
-        type="text"
-        value={customLine}
-        onChange={(e) => onCustomLineChange(e.target.value)}
-        placeholder="Write one specific line about their content..."
-        style={{
-          width: '100%', fontSize: '15px', color: '#111',
-          border: '1.5px solid #E7E5E4', borderRadius: '8px',
-          padding: '10px 13px', outline: 'none', fontFamily: 'inherit',
-          boxSizing: 'border-box', backgroundColor: 'white', marginBottom: '12px',
-        }}
-        onFocus={(e) => (e.target.style.borderColor = '#111')}
-        onBlur={(e) => (e.target.style.borderColor = '#E7E5E4')}
-      />
-
       {derived ? (
         <>
           <div style={{

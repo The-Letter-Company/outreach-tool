@@ -32,7 +32,6 @@ function scoreLabel(score: number): string {
   return 'Weak'
 }
 
-type RightTab = 'blog' | 'email'
 type QueueFilter = 'all' | 'verified' | 'unverified'
 
 function SourceBadge({ label, variant }: { label: string; variant: 'neutral' | 'warning' }) {
@@ -80,9 +79,7 @@ export default function Home() {
   )
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | undefined>(undefined)
-  const [customLine, setCustomLine] = useState('')
   const [copied, setCopied] = useState(false)
-  const [rightTab, setRightTab] = useState<RightTab>('blog')
   const [videoFilename, setVideoFilename] = useState<string | null>(null)
   const [showEnrich, setShowEnrich] = useState(false)
   const [queueFilter, setQueueFilter] = useState<QueueFilter>('all')
@@ -102,9 +99,7 @@ export default function Home() {
   const advance = useCallback(() => {
     setCurrentIndex((i) => i + 1)
     setSelectedTemplateId(undefined)
-    setCustomLine('')
     setCopied(false)
-    setRightTab('blog')
     setVideoFilename(null)
   }, [])
 
@@ -121,12 +116,12 @@ export default function Home() {
     setProspects((prev) =>
       prev.map((p) =>
         p.company.id === current.company.id
-          ? { ...p, status: 'drafted' as const, selectedTemplateId, customLine }
+          ? { ...p, status: 'drafted' as const, selectedTemplateId }
           : p
       )
     )
     advance()
-  }, [current, advance, selectedTemplateId, customLine])
+  }, [current, advance, selectedTemplateId])
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -137,8 +132,6 @@ export default function Home() {
       if (e.key === '1') setSelectedTemplateId('1')
       if (e.key === '2') setSelectedTemplateId('2')
       if (e.key === '3') setSelectedTemplateId('3')
-      if (e.key === 'b' || e.key === 'B') setRightTab('blog')
-      if (e.key === 'e' || e.key === 'E') setRightTab('email')
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
@@ -236,7 +229,7 @@ export default function Home() {
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
         {/* ══ LEFT PANEL ══ */}
-        <div style={{ width: '380px', flexShrink: 0, borderRight: '1px solid #E7E5E4', backgroundColor: 'white', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ flex: 1, minWidth: 0, borderRight: '1px solid #E7E5E4', backgroundColor: 'white', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: '0' }}>
 
             {/* ── Queue header with filter ── */}
@@ -314,19 +307,22 @@ export default function Home() {
               </div>
             </div>
 
+            {/* ── Company + Contact (side-by-side) ── */}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', alignItems: 'stretch' }}>
+
             {/* ── Company box ── */}
-            <div style={{ backgroundColor: '#FAFAF9', border: '1px solid #E7E5E4', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#A8A29E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Company</div>
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <div style={{ fontSize: '22px', fontWeight: 700, color: '#111', letterSpacing: '-0.02em', lineHeight: '1.2' }}>{current.company.name}</div>
-                <span style={{ flexShrink: 0, marginTop: '3px', fontSize: '12px', fontWeight: 600, color: '#44403C', backgroundColor: '#F0EFED', borderRadius: '6px', padding: '3px 10px' }}>
+            <div style={{ flex: 1, minWidth: 0, backgroundColor: '#FAFAF9', border: '1px solid #E7E5E4', borderRadius: '10px', padding: '12px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 600, color: '#A8A29E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>Company</div>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px', marginBottom: '6px' }}>
+                <div style={{ fontSize: '17px', fontWeight: 700, color: '#111', letterSpacing: '-0.02em', lineHeight: '1.2' }}>{current.company.name}</div>
+                <span style={{ flexShrink: 0, marginTop: '2px', fontSize: '11px', fontWeight: 600, color: '#44403C', backgroundColor: '#F0EFED', borderRadius: '5px', padding: '2px 8px' }}>
                   {current.company.stage}
                 </span>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px', marginBottom: badges ? '10px' : '0' }}>
-                <span style={{ fontSize: '13px', color: '#78716C' }}>{formatRaised(current.company.raised)} raised</span>
-                <span style={{ fontSize: '13px', color: '#78716C' }}>{current.company.employees} employees</span>
-                <span style={{ fontSize: '13px', color: '#A8A29E' }}>{current.company.domain}</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px 12px', marginBottom: badges ? '8px' : '0' }}>
+                <span style={{ fontSize: '12px', color: '#78716C' }}>{formatRaised(current.company.raised)} raised</span>
+                <span style={{ fontSize: '12px', color: '#78716C' }}>{current.company.employees} employees</span>
+                <span style={{ fontSize: '12px', color: '#A8A29E' }}>{current.company.domain}</span>
               </div>
               {badges && (
                 <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
@@ -336,15 +332,15 @@ export default function Home() {
             </div>
 
             {/* ── Contact box ── */}
-            <div style={{ backgroundColor: '#FAFAF9', border: '1px solid #E7E5E4', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#A8A29E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Contact</div>
+            <div style={{ flex: 1, minWidth: 0, backgroundColor: '#FAFAF9', border: '1px solid #E7E5E4', borderRadius: '10px', padding: '12px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 600, color: '#A8A29E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>Contact</div>
               {current.contact.name ? (
                 <>
-                  <div style={{ fontSize: '18px', fontWeight: 600, color: '#111', marginBottom: '3px' }}>{current.contact.name}</div>
-                  <div style={{ fontSize: '13px', color: '#78716C', marginBottom: '10px' }}>{current.contact.title}</div>
+                  <div style={{ fontSize: '15px', fontWeight: 600, color: '#111', marginBottom: '2px' }}>{current.contact.name}</div>
+                  <div style={{ fontSize: '12px', color: '#78716C', marginBottom: '8px' }}>{current.contact.title}</div>
                   {current.contact.email ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div style={{ fontSize: '13px', color: '#44403C', fontFamily: 'ui-monospace, monospace', backgroundColor: 'white', border: '1px solid #E7E5E4', borderRadius: '6px', padding: '7px 10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                      <div style={{ fontSize: '12px', color: '#44403C', fontFamily: 'ui-monospace, monospace', backgroundColor: 'white', border: '1px solid #E7E5E4', borderRadius: '5px', padding: '5px 8px' }}>
                         {current.contact.email}
                       </div>
                       {current.source && !current.source.emailVerified && (
@@ -354,12 +350,29 @@ export default function Home() {
                       )}
                     </div>
                   ) : (
-                    <div style={{ fontSize: '13px', color: '#d97706', fontStyle: 'italic' }}>No email found — add manually</div>
+                    <div style={{ fontSize: '12px', color: '#d97706', fontStyle: 'italic' }}>No email found — add manually</div>
                   )}
                 </>
               ) : (
-                <div style={{ fontSize: '13px', color: '#d97706', fontStyle: 'italic' }}>Contact needed — add manually</div>
+                <div style={{ fontSize: '12px', color: '#d97706', fontStyle: 'italic' }}>Contact needed — add manually</div>
               )}
+            </div>
+
+            </div>
+
+            {/* ── Email Draft ── */}
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ fontSize: '11px', fontWeight: 600, color: '#A8A29E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Choose Template</div>
+                <TemplateSelector selectedId={selectedTemplateId} onSelect={setSelectedTemplateId} />
+              </div>
+              <EmailComposer
+                prospect={current}
+                selectedTemplateId={selectedTemplateId}
+                copied={copied}
+                setCopied={setCopied}
+                videoFilename={videoFilename}
+              />
             </div>
 
             {/* ── Actions ── */}
@@ -384,7 +397,7 @@ export default function Home() {
 
           {/* ── Footer ── */}
           <div style={{ flexShrink: 0, borderTop: '1px solid #E7E5E4', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'white' }}>
-            <p style={{ fontSize: '11px', color: '#C4BFB9', margin: 0 }}>A — archive · D — drafted · B / E — switch tab</p>
+            <p style={{ fontSize: '11px', color: '#C4BFB9', margin: 0 }}>A — archive · D — drafted · 1 / 2 / 3 — template</p>
             <VideoRecorder companyName={current.company.name} onRecorded={setVideoFilename} />
           </div>
         </div>
@@ -416,49 +429,14 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Tabs */}
-            <div style={{ display: 'flex', padding: '0 20px' }}>
-              {(['blog', 'email'] as RightTab[]).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setRightTab(tab)}
-                  style={{
-                    padding: '10px 20px', fontSize: '13px', fontWeight: 600,
-                    color: rightTab === tab ? '#111' : '#A8A29E',
-                    backgroundColor: 'transparent', border: 'none',
-                    borderBottom: rightTab === tab ? '2px solid #111' : '2px solid transparent',
-                    cursor: 'pointer', fontFamily: 'inherit',
-                    marginBottom: '-1px',
-                    textTransform: 'capitalize',
-                    transition: 'color 0.15s',
-                  }}
-                >
-                  {tab === 'blog' ? '📄 Blog Preview' : '✉️ Email Draft'}
-                </button>
-              ))}
+            {/* Blog Preview label */}
+            <div style={{ display: 'flex', padding: '10px 20px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 600, color: '#111' }}>📄 Blog Preview</span>
             </div>
           </div>
 
           <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-            {rightTab === 'blog' ? (
-              <BlogViewer company={current.company} hideBlogScore />
-            ) : (
-              <div style={{ flex: 1, overflowY: 'auto', padding: '24px', maxWidth: '680px', width: '100%', margin: '0 auto' }}>
-                <div style={{ marginBottom: '20px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 600, color: '#A8A29E', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Choose Template</div>
-                  <TemplateSelector selectedId={selectedTemplateId} onSelect={setSelectedTemplateId} />
-                </div>
-                <EmailComposer
-                  prospect={current}
-                  selectedTemplateId={selectedTemplateId}
-                  customLine={customLine}
-                  onCustomLineChange={setCustomLine}
-                  copied={copied}
-                  setCopied={setCopied}
-                  videoFilename={videoFilename}
-                />
-              </div>
-            )}
+            <BlogViewer company={current.company} hideBlogScore />
           </div>
 
         </div>
