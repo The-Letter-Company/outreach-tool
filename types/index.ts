@@ -23,7 +23,6 @@ export interface Prospect {
   contact: Contact
   status: 'pending' | 'drafted' | 'archived'
   selectedTemplateId?: string
-  customLine?: string
   // enrichment metadata
   source?: ProspectSource
 }
