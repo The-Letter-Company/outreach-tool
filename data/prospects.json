@@ -1,0 +1,198 @@
+{
+  "prospects": [
+    {
+      "company": {
+        "id": "1",
+        "name": "Meridian",
+        "domain": "meridian.io",
+        "stage": "Series B",
+        "raised": 18000000,
+        "employees": 85,
+        "blogUrl": "https://www.notion.so/blog",
+        "blogScore": 85,
+        "blogScoreReason": "Targets CFOs doing real due diligence — posts assume financial literacy and cite primary data, not surface-level explainers"
+      },
+      "contact": {
+        "id": "1",
+        "companyId": "1",
+        "name": "Sarah Chen",
+        "email": "sarah@meridian.io",
+        "title": "Head of Content"
+      },
+      "status": "pending"
+    },
+    {
+      "company": {
+        "id": "2",
+        "name": "Vercel",
+        "domain": "vercel.com",
+        "stage": "Series C",
+        "raised": 40000000,
+        "employees": 180,
+        "blogUrl": "https://vercel.com/blog",
+        "blogScore": 38,
+        "blogScoreReason": "Mostly product announcements and changelog posts — written for existing users, not for readers doing independent research"
+      },
+      "contact": {
+        "id": "2",
+        "companyId": "2",
+        "name": "James Holloway",
+        "email": "james@vercel.com",
+        "title": "VP Marketing"
+      },
+      "status": "pending"
+    },
+    {
+      "company": {
+        "id": "3",
+        "name": "Luma",
+        "domain": "lu.ma",
+        "stage": "Series A",
+        "raised": 8500000,
+        "employees": 32,
+        "blogUrl": "https://lu.ma/blog",
+        "blogScore": 22,
+        "blogScoreReason": "How-to guides for event basics (\"how to sell tickets\", \"how to write an invite\") — addresses simple questions, not a research audience"
+      },
+      "contact": {
+        "id": "3",
+        "companyId": "3",
+        "name": "Priya Nair",
+        "email": "priya@lu.ma",
+        "title": "Head of Marketing"
+      },
+      "status": "pending"
+    },
+    {
+      "company": {
+        "id": "4",
+        "name": "Runway",
+        "domain": "runway.com",
+        "stage": "Series B",
+        "raised": 26000000,
+        "employees": 110,
+        "blogUrl": "https://runwayml.com/blog",
+        "blogScore": 78,
+        "blogScoreReason": "Research-grade writing on generative video, latent diffusion, and creative AI — assumes a reader who already knows the field"
+      },
+      "contact": {
+        "id": "4",
+        "companyId": "4",
+        "name": "Tomás Rivera",
+        "email": "tomas@runway.com",
+        "title": "Head of Content"
+      },
+      "status": "pending"
+    },
+    {
+      "company": {
+        "id": "5",
+        "name": "Attio",
+        "domain": "attio.com",
+        "stage": "Series A",
+        "raised": 14000000,
+        "employees": 48,
+        "blogUrl": "https://attio.com/blog",
+        "blogScore": 18,
+        "blogScoreReason": "Heavily SEO-optimized listicles targeting \"what is a CRM\" queries — written for people with no prior knowledge, not serious buyers"
+      },
+      "contact": {
+        "id": "5",
+        "companyId": "5",
+        "name": "Maya Okafor",
+        "email": "maya@attio.com",
+        "title": "Head of Marketing"
+      },
+      "status": "pending"
+    },
+    {
+      "company": {
+        "id": "6",
+        "name": "Descript",
+        "domain": "descript.com",
+        "stage": "Series C",
+        "raised": 35000000,
+        "employees": 155,
+        "blogUrl": "https://www.descript.com/blog",
+        "blogScore": 25,
+        "blogScoreReason": "Beginner tutorials on podcasting and video editing basics — assumes zero prior knowledge, written to capture top-of-funnel search traffic"
+      },
+      "contact": {
+        "id": "6",
+        "companyId": "6",
+        "name": "Alex Park",
+        "email": "alex@descript.com",
+        "title": "VP Marketing"
+      },
+      "status": "pending"
+    },
+    {
+      "company": {
+        "id": "7",
+        "name": "Codeium",
+        "domain": "codeium.com",
+        "stage": "Series B",
+        "raised": 22000000,
+        "employees": 95,
+        "blogUrl": "https://codeium.com/blog",
+        "blogScore": 81,
+        "blogScoreReason": "Deep technical posts on LLM internals, benchmark methodology, and context retrieval — written for engineers who already understand the stack"
+      },
+      "contact": {
+        "id": "7",
+        "companyId": "7",
+        "name": "Nina Vogt",
+        "email": "nina@codeium.com",
+        "title": "Head of Content"
+      },
+      "status": "pending"
+    },
+    {
+      "company": {
+        "id": "8",
+        "name": "Campsite",
+        "domain": "campsite.design",
+        "stage": "Seed",
+        "raised": 5200000,
+        "employees": 20,
+        "blogUrl": "https://campsite.design/blog",
+        "blogScore": 55,
+        "blogScoreReason": "Thoughtful product essays on async communication and design process — not research-grade but written for practitioners, not beginners"
+      },
+      "contact": {
+        "id": "8",
+        "companyId": "8",
+        "name": "Reuben Osei",
+        "email": "reuben@campsite.design",
+        "title": "Head of Marketing"
+      },
+      "status": "pending"
+    },
+    {
+      "company": {
+        "id": "17824439403721",
+        "name": "Retool",
+        "domain": "retool.com",
+        "stage": "Series C",
+        "raised": 45000000,
+        "employees": 300,
+        "blogUrl": "https://retool.com/blog",
+        "blogScore": 50,
+        "blogScoreReason": "low cadence (0 recent posts); longform content; changelog-heavy; niche technical or business audience"
+      },
+      "contact": {
+        "id": "17824439403722",
+        "companyId": "17824439403721",
+        "name": "",
+        "email": "",
+        "title": ""
+      },
+      "status": "pending",
+      "source": {
+        "company": "csv",
+        "contact": "manual",
+        "emailVerified": false
+      }
+    }
+  ]
+}

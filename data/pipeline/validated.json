@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Retool",
+    "domain": "retool.com",
+    "stage": "Series C",
+    "raised": 45000000,
+    "employees": 300,
+    "source": "csv",
+    "blogUrl": "https://retool.com/blog",
+    "blogScore": 50,
+    "blogScoreReason": "low cadence (0 recent posts); longform content; changelog-heavy; niche technical or business audience",
+    "recentPosts": [
+      {
+        "title": "Retool Blog",
+        "date": null,
+        "wordCountEstimate": 2706
+      }
+    ]
+  }
+]
