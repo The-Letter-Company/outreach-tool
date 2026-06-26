@@ -1,4 +1,4 @@
-# Outreach — Lead Enrichment Pipeline
+# Outreach — Lead Enrichment Pipeline (AS OF 6/25) 
 
 Automatically validates prospects from a CSV, scores their blog, finds contacts, and constructs email addresses. Entirely free — no API keys required.
 
