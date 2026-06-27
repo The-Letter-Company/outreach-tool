@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import { NextResponse } from 'next/server'
 import { sourceCompanies } from '@/scripts/lib/stage1-source'
@@ -6,20 +5,12 @@ import { validateBlogs } from '@/scripts/lib/stage2-blog'
 import { findContact } from '@/scripts/lib/stage3-contact'
 import { resolveEmail } from '@/scripts/lib/stage4-email'
 import { mergeProspects } from '@/scripts/lib/merge'
-import { Prospect, EnrichedProspect, PipelineProgress, PipelineContact, ValidatedCompany } from '@/types'
+import { getProspects, upsertProspects } from '@/lib/prospects-store'
+import { EnrichedProspect, PipelineProgress, PipelineContact, ValidatedCompany } from '@/types'
+
+export const dynamic = 'force-dynamic'
 
 const CSV_PATH = path.join(process.cwd(), 'data', 'import.csv')
-const PROSPECTS_PATH = path.join(process.cwd(), 'data', 'prospects.json')
-const VALIDATED_PATH = path.join(process.cwd(), 'data', 'pipeline', 'validated.json')
-
-function loadProspects(): Prospect[] {
-  try {
-    const raw = JSON.parse(fs.readFileSync(PROSPECTS_PATH, 'utf-8')) as { prospects: Prospect[] }
-    return raw.prospects ?? []
-  } catch {
-    return []
-  }
-}
 
 function sse(event: PipelineProgress): string {
   return `data: ${JSON.stringify(event)}\n\n`
@@ -53,8 +44,6 @@ export async function POST(): Promise<Response> {
         // Stage 2
         emit({ stage: 'validating', message: `Validating blogs for ${companies.length} companies…`, total: companies.length })
         const { validated, skipped: s2Skip } = await validateBlogs(companies)
-        fs.mkdirSync(path.dirname(VALIDATED_PATH), { recursive: true })
-        fs.writeFileSync(VALIDATED_PATH, JSON.stringify(validated, null, 2))
         emit({
           stage: 'validating',
           message: `${validated.length} blogs passed (${s2Skip.length} skipped)`,
@@ -94,11 +83,12 @@ export async function POST(): Promise<Response> {
         const foundEmails = enriched.filter((e) => e.contact?.email).length
         emit({ stage: 'emails', message: `${foundEmails} emails resolved`, found: foundEmails, total: withContacts.length })
 
-        // Merge
-        const existing = loadProspects()
+        // Merge into the database (skips companies whose domain already exists)
+        const existing = await getProspects()
         const merged = mergeProspects(existing, enriched)
-        const added = merged.length - existing.length
-        fs.writeFileSync(PROSPECTS_PATH, JSON.stringify({ prospects: merged }, null, 2))
+        const newProspects = merged.slice(existing.length)
+        await upsertProspects(newProspects)
+        const added = newProspects.length
 
         emit({
           stage: 'done',
