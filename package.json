@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "enrich": "npx tsx --env-file=.env.local scripts/enrich.ts"
+    "enrich": "npx tsx --env-file=.env.local scripts/enrich.ts",
+    "seed": "npx tsx --env-file=.env.local scripts/seed-supabase.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4"
