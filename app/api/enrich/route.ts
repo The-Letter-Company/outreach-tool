@@ -6,9 +6,8 @@ import { validateBlogs } from '@/scripts/lib/stage2-blog'
 import { findContact } from '@/scripts/lib/stage3-contact'
 import { resolveEmail } from '@/scripts/lib/stage4-email'
 import { mergeProspects } from '@/scripts/lib/merge'
-import { Prospect, EnrichedProspect, PipelineProgress, PipelineContact, ValidatedCompany } from '@/types'
+import { Prospect, PipelineProgress, PipelineContact, ValidatedCompany } from '@/types'
 
-const CSV_PATH = path.join(process.cwd(), 'data', 'import.csv')
 const PROSPECTS_PATH = path.join(process.cwd(), 'data', 'prospects.json')
 const VALIDATED_PATH = path.join(process.cwd(), 'data', 'pipeline', 'validated.json')
 
@@ -35,29 +34,29 @@ export async function POST(): Promise<Response> {
       }
 
       try {
-        // Stage 1
-        emit({ stage: 'sourcing', message: 'Reading companies from CSV…' })
-        const { companies, skipped: s1Skip } = await sourceCompanies(CSV_PATH)
+        // Stage 1 — Apollo org search
+        emit({ stage: 'sourcing', message: 'Sourcing companies from Apollo…' })
+        const { companies, skipped: s1Skip } = await sourceCompanies()
         emit({
           stage: 'sourcing',
-          message: `Found ${companies.length} companies (${s1Skip} skipped)`,
+          message: `Found ${companies.length} companies (${s1Skip} filtered out)`,
           found: companies.length,
         })
 
         if (companies.length === 0) {
-          emit({ stage: 'done', message: 'No companies in CSV. Add rows to data/import.csv.' })
+          emit({ stage: 'done', message: 'No companies returned from Apollo. Check your API key and filters.' })
           controller.close()
           return
         }
 
-        // Stage 2
-        emit({ stage: 'validating', message: `Validating blogs for ${companies.length} companies…`, total: companies.length })
+        // Stage 2 — Blog scoring
+        emit({ stage: 'validating', message: `Scoring blogs for ${companies.length} companies…`, total: companies.length })
         const { validated, skipped: s2Skip } = await validateBlogs(companies)
         fs.mkdirSync(path.dirname(VALIDATED_PATH), { recursive: true })
         fs.writeFileSync(VALIDATED_PATH, JSON.stringify(validated, null, 2))
         emit({
           stage: 'validating',
-          message: `${validated.length} blogs passed (${s2Skip.length} skipped)`,
+          message: `${validated.length} passed (${s2Skip.length} filtered out)`,
           found: validated.length,
           total: companies.length,
         })
@@ -68,7 +67,7 @@ export async function POST(): Promise<Response> {
           return
         }
 
-        // Stage 3
+        // Stage 3 — Apollo people search
         emit({ stage: 'contacts', message: `Finding contacts for ${validated.length} companies…`, total: validated.length })
         const withContacts: Array<{ company: ValidatedCompany; contact: PipelineContact | null }> = []
 
@@ -79,9 +78,9 @@ export async function POST(): Promise<Response> {
         const foundContacts = withContacts.filter((w) => w.contact !== null).length
         emit({ stage: 'contacts', message: `${foundContacts} contacts found`, found: foundContacts, total: validated.length })
 
-        // Stage 4
-        emit({ stage: 'emails', message: 'Resolving email addresses…', total: withContacts.length })
-        const enriched: EnrichedProspect[] = []
+        // Stage 4 — Hunter email verify
+        emit({ stage: 'emails', message: 'Verifying emails via Hunter…', total: foundContacts })
+        const enriched: Array<{ company: ValidatedCompany; contact: PipelineContact | null }> = []
 
         for (const { company, contact } of withContacts) {
           if (!contact) {
@@ -92,18 +91,17 @@ export async function POST(): Promise<Response> {
           enriched.push({ company, contact: result.contact })
         }
         const foundEmails = enriched.filter((e) => e.contact?.email).length
-        emit({ stage: 'emails', message: `${foundEmails} emails resolved`, found: foundEmails, total: withContacts.length })
+        emit({ stage: 'emails', message: `${foundEmails} verified`, found: foundEmails, total: foundContacts })
 
         // Merge
         const existing = loadProspects()
-        const merged = mergeProspects(existing, enriched)
-        const added = merged.length - existing.length
+        const { prospects: merged, added, skipped: dupSkipped } = mergeProspects(existing, enriched)
         fs.writeFileSync(PROSPECTS_PATH, JSON.stringify({ prospects: merged }, null, 2))
 
         emit({
           stage: 'done',
           message: added > 0
-            ? `${added} new prospect${added !== 1 ? 's' : ''} added to the queue`
+            ? `${added} new prospect${added !== 1 ? 's' : ''} added to your queue (${dupSkipped} duplicate${dupSkipped !== 1 ? 's' : ''} skipped)`
             : 'No new prospects — all companies already in queue',
           found: added,
         })

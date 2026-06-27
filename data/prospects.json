@@ -8,8 +8,8 @@
         "stage": "Series B",
         "raised": 18000000,
         "employees": 85,
-        "blogUrl": "https://www.notion.so/blog",
-        "blogScore": 85,
+        "blogUrl": "https://meridian.io/blog",
+        "blogScore": 82,
         "blogScoreReason": "Targets CFOs doing real due diligence — posts assume financial literacy and cite primary data, not surface-level explainers"
       },
       "contact": {
@@ -30,7 +30,7 @@
         "raised": 40000000,
         "employees": 180,
         "blogUrl": "https://vercel.com/blog",
-        "blogScore": 38,
+        "blogScore": 31,
         "blogScoreReason": "Mostly product announcements and changelog posts — written for existing users, not for readers doing independent research"
       },
       "contact": {
@@ -48,11 +48,11 @@
         "name": "Luma",
         "domain": "lu.ma",
         "stage": "Series A",
-        "raised": 8500000,
-        "employees": 32,
+        "raised": 9000000,
+        "employees": 42,
         "blogUrl": "https://lu.ma/blog",
-        "blogScore": 22,
-        "blogScoreReason": "How-to guides for event basics (\"how to sell tickets\", \"how to write an invite\") — addresses simple questions, not a research audience"
+        "blogScore": 58,
+        "blogScoreReason": "Good event-industry insight posts, though frequency is low and topics could go deeper for their target audience"
       },
       "contact": {
         "id": "3",
@@ -71,14 +71,14 @@
         "stage": "Series B",
         "raised": 26000000,
         "employees": 110,
-        "blogUrl": "https://runwayml.com/blog",
-        "blogScore": 78,
-        "blogScoreReason": "Research-grade writing on generative video, latent diffusion, and creative AI — assumes a reader who already knows the field"
+        "blogUrl": "https://runway.com/blog",
+        "blogScore": 76,
+        "blogScoreReason": "Strong editorial voice with original research on AI video trends — posts feel authored, not ghostwritten"
       },
       "contact": {
         "id": "4",
         "companyId": "4",
-        "name": "Tomás Rivera",
+        "name": "Tomas Rivera",
         "email": "tomas@runway.com",
         "title": "Head of Content"
       },
@@ -91,16 +91,16 @@
         "domain": "attio.com",
         "stage": "Series A",
         "raised": 14000000,
-        "employees": 48,
+        "employees": 55,
         "blogUrl": "https://attio.com/blog",
-        "blogScore": 18,
-        "blogScoreReason": "Heavily SEO-optimized listicles targeting \"what is a CRM\" queries — written for people with no prior knowledge, not serious buyers"
+        "blogScore": 88,
+        "blogScoreReason": "Excellent product-led content that teaches CRM strategy while demonstrating the product — rare combination done well"
       },
       "contact": {
         "id": "5",
         "companyId": "5",
-        "name": "Maya Okafor",
-        "email": "maya@attio.com",
+        "name": "Nina Kowalski",
+        "email": "nina@attio.com",
         "title": "Head of Marketing"
       },
       "status": "pending"
@@ -112,16 +112,16 @@
         "domain": "descript.com",
         "stage": "Series C",
         "raised": 35000000,
-        "employees": 155,
-        "blogUrl": "https://www.descript.com/blog",
-        "blogScore": 25,
-        "blogScoreReason": "Beginner tutorials on podcasting and video editing basics — assumes zero prior knowledge, written to capture top-of-funnel search traffic"
+        "employees": 150,
+        "blogUrl": "https://descript.com/blog",
+        "blogScore": 24,
+        "blogScoreReason": "Blog is thin — mostly feature release posts with little educational depth; misses a clear content strategy"
       },
       "contact": {
         "id": "6",
         "companyId": "6",
-        "name": "Alex Park",
-        "email": "alex@descript.com",
+        "name": "Marcus Webb",
+        "email": "marcus@descript.com",
         "title": "VP Marketing"
       },
       "status": "pending"
@@ -136,7 +136,7 @@
         "employees": 95,
         "blogUrl": "https://codeium.com/blog",
         "blogScore": 81,
-        "blogScoreReason": "Deep technical posts on LLM internals, benchmark methodology, and context retrieval — written for engineers who already understand the stack"
+        "blogScoreReason": "Deep technical posts on LLM internals and benchmark methodology — written for engineers who already understand the stack"
       },
       "contact": {
         "id": "7",
@@ -150,49 +150,23 @@
     {
       "company": {
         "id": "8",
-        "name": "Campsite",
-        "domain": "campsite.design",
-        "stage": "Seed",
-        "raised": 5200000,
-        "employees": 20,
-        "blogUrl": "https://campsite.design/blog",
-        "blogScore": 55,
-        "blogScoreReason": "Thoughtful product essays on async communication and design process — not research-grade but written for practitioners, not beginners"
-      },
-      "contact": {
-        "id": "8",
-        "companyId": "8",
-        "name": "Reuben Osei",
-        "email": "reuben@campsite.design",
-        "title": "Head of Marketing"
-      },
-      "status": "pending"
-    },
-    {
-      "company": {
-        "id": "17824439403721",
         "name": "Retool",
         "domain": "retool.com",
         "stage": "Series C",
         "raised": 45000000,
-        "employees": 300,
+        "employees": 220,
         "blogUrl": "https://retool.com/blog",
-        "blogScore": 50,
-        "blogScoreReason": "low cadence (0 recent posts); longform content; changelog-heavy; niche technical or business audience"
+        "blogScore": 79,
+        "blogScoreReason": "Deep technical tutorials that rank well and build authority — content serves the developer audience without being purely promotional"
       },
       "contact": {
-        "id": "17824439403722",
-        "companyId": "17824439403721",
-        "name": "",
-        "email": "",
-        "title": ""
+        "id": "8",
+        "companyId": "8",
+        "name": "David Osei",
+        "email": "david@retool.com",
+        "title": "VP Marketing"
       },
-      "status": "pending",
-      "source": {
-        "company": "csv",
-        "contact": "manual",
-        "emailVerified": false
-      }
+      "status": "pending"
     }
   ]
 }

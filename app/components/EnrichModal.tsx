@@ -9,10 +9,10 @@ interface EnrichModalProps {
 }
 
 const STAGE_LABELS: Record<PipelineStage, string> = {
-  sourcing: 'Sourcing companies',
-  validating: 'Validating blogs',
+  sourcing: 'Sourcing companies from Apollo',
+  validating: 'Scoring blogs',
   contacts: 'Finding contacts',
-  emails: 'Resolving emails',
+  emails: 'Verifying emails',
   done: 'Done',
   error: 'Error',
 }
@@ -39,8 +39,8 @@ function StageRow({
       <div style={{
         width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0, marginTop: '1px',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        backgroundColor: isDone ? '#16a34a' : isActive ? '#111' : '#F0EFED',
-        border: isPending ? '1.5px solid #E7E5E4' : 'none',
+        backgroundColor: isDone ? '#2D7A45' : isActive ? '#201E1F' : '#EDE9DC',
+        border: isPending ? '1.5px solid #D9D4C7' : 'none',
       }}>
         {isDone && <span style={{ color: 'white', fontSize: '10px', fontWeight: 700 }}>✓</span>}
         {isActive && (
@@ -54,12 +54,12 @@ function StageRow({
       <div>
         <div style={{
           fontSize: '13px', fontWeight: 600,
-          color: isDone ? '#16a34a' : isActive ? '#111' : '#C4BFB9',
+          color: isDone ? '#2D7A45' : isActive ? '#201E1F' : 'rgba(32,30,31,0.28)',
         }}>
           {STAGE_LABELS[stage]}
         </div>
         {(isDone || isActive) && message && (
-          <div style={{ fontSize: '12px', color: '#78716C', marginTop: '1px' }}>{message}</div>
+          <div style={{ fontSize: '12px', color: 'rgba(32,30,31,0.5)', marginTop: '1px' }}>{message}</div>
         )}
       </div>
     </div>
@@ -137,14 +137,15 @@ export default function EnrichModal({ onClose, onComplete }: EnrichModalProps) {
       backgroundColor: 'rgba(0,0,0,0.4)',
     }}>
       <div style={{
-        backgroundColor: 'white', borderRadius: '14px',
+        backgroundColor: '#FFFFF8', borderRadius: '14px',
         width: '420px', padding: '28px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+        boxShadow: '0 20px 60px rgba(32,30,31,0.18)',
+        border: '1px solid #EDE9DC',
       }}>
-        <div style={{ fontSize: '17px', fontWeight: 700, color: '#111', marginBottom: '4px' }}>
+        <div style={{ fontSize: '17px', fontWeight: 600, color: '#201E1F', marginBottom: '4px', fontFamily: 'var(--font-sans)' }}>
           {isDone ? 'Pipeline complete' : isError ? 'Pipeline error' : 'Enriching prospects…'}
         </div>
-        <div style={{ fontSize: '13px', color: '#78716C', marginBottom: '24px' }}>
+        <div style={{ fontSize: '13px', color: 'rgba(32,30,31,0.5)', marginBottom: '24px' }}>
           {isDone
             ? finalEvent?.message ?? 'Done'
             : isError
@@ -152,7 +153,7 @@ export default function EnrichModal({ onClose, onComplete }: EnrichModalProps) {
             : 'This takes 30–60 seconds. Keep this window open.'}
         </div>
 
-        <div style={{ borderTop: '1px solid #F0EFED', borderBottom: '1px solid #F0EFED', padding: '4px 0', marginBottom: '20px' }}>
+        <div style={{ borderTop: '1px solid #EDE9DC', borderBottom: '1px solid #EDE9DC', padding: '4px 0', marginBottom: '20px' }}>
           {STAGE_ORDER.filter((s) => s !== 'done').map((stage) => (
             <StageRow
               key={stage}
@@ -170,10 +171,10 @@ export default function EnrichModal({ onClose, onComplete }: EnrichModalProps) {
               onClose()
             }}
             style={{
-              width: '100%', backgroundColor: isDone ? '#111' : '#78716C',
-              color: 'white', fontSize: '14px', fontWeight: 600,
+              width: '100%', backgroundColor: isDone ? '#EE724A' : 'rgba(32,30,31,0.45)',
+              color: '#FFFFF8', fontSize: '14px', fontWeight: 600,
               border: 'none', borderRadius: '8px', padding: '11px 0',
-              cursor: 'pointer', fontFamily: 'inherit',
+              cursor: 'pointer', fontFamily: 'var(--font-sans)',
             }}
           >
             {isDone ? 'View new prospects' : 'Close'}
@@ -185,9 +186,9 @@ export default function EnrichModal({ onClose, onComplete }: EnrichModalProps) {
               onClose()
             }}
             style={{
-              width: '100%', backgroundColor: 'transparent', color: '#A8A29E',
-              fontSize: '13px', fontWeight: 500, border: '1px solid #E7E5E4',
-              borderRadius: '8px', padding: '9px 0', cursor: 'pointer', fontFamily: 'inherit',
+              width: '100%', backgroundColor: 'transparent', color: 'rgba(32,30,31,0.4)',
+              fontSize: '13px', fontWeight: 500, border: '1px solid #EDE9DC',
+              borderRadius: '8px', padding: '9px 0', cursor: 'pointer', fontFamily: 'var(--font-sans)',
             }}
           >
             Cancel

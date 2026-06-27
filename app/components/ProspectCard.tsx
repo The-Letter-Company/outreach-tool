@@ -1,10 +1,11 @@
 'use client'
 
-import { Company, Contact } from '@/types'
+import { Company, Contact, ContactConfidence } from '@/types'
 
 interface ProspectCardProps {
   company: Company
   contact: Contact
+  emailConfidence?: ContactConfidence
 }
 
 function formatRaised(amount: number): string {
@@ -18,7 +19,27 @@ function scoreColor(score: number): string {
   return '#ef4444'
 }
 
-export default function ProspectCard({ company, contact }: ProspectCardProps) {
+function ConfidenceBadge({ confidence }: { confidence: ContactConfidence | undefined }) {
+  if (!confidence) return null
+  const map: Record<ContactConfidence, { label: string; color: string; bg: string }> = {
+    high:   { label: '✓ Verified',   color: '#2D7A45', bg: '#EAF4EE' },
+    medium: { label: '~ Likely',     color: '#B95737', bg: '#FBF0EB' },
+    low:    { label: '? Unverified', color: '#888',    bg: '#F0F0F0' },
+  }
+  const s = map[confidence]
+  return (
+    <span style={{
+      display: 'inline-block', marginTop: '4px',
+      fontSize: '10px', fontWeight: 600,
+      padding: '2px 7px', borderRadius: '4px',
+      color: s.color, backgroundColor: s.bg,
+    }}>
+      {s.label}
+    </span>
+  )
+}
+
+export default function ProspectCard({ company, contact, emailConfidence }: ProspectCardProps) {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
@@ -50,6 +71,7 @@ export default function ProspectCard({ company, contact }: ProspectCardProps) {
         </div>
         <div style={{ fontSize: '12px', color: '#666', marginBottom: '2px' }}>{contact.title}</div>
         <div style={{ fontSize: '12px', color: '#666', fontFamily: 'monospace' }}>{contact.email}</div>
+        <ConfidenceBadge confidence={emailConfidence} />
       </div>
 
       <div style={{ borderTop: '1px solid #E5E5E5', margin: '14px 0' }} />

@@ -192,7 +192,9 @@ export async function validateBlogs(companies: RawCompany[]): Promise<BlogValida
     console.log(`  Checking ${company.name}...`)
     await sleep(RATE_LIMIT_MS)
 
-    const blogUrl = await findBlogUrl(company.domain)
+    // Use Apollo-supplied blog URL as first candidate if available
+    const apolloBlogUrl = (company as RawCompany & { blogUrl?: string }).blogUrl ?? null
+    const blogUrl = apolloBlogUrl ?? await findBlogUrl(company.domain)
     if (!blogUrl) {
       skipped.push(`${company.name}: no blog URL found`)
       continue

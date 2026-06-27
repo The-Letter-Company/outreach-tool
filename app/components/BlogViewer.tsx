@@ -53,28 +53,28 @@ export default function BlogViewer({ company }: BlogViewerProps) {
         style={{
           height: `${CARD_HEIGHT}px`,
           flexShrink: 0,
-          backgroundColor: 'white',
-          borderBottom: '1px solid #E5E5E5',
+          backgroundColor: '#FFFFF8',
+          borderBottom: '1px solid #EDE9DC',
           padding: '8px 16px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
         }}
       >
-        <div style={{ fontSize: '10px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '3px' }}>
+        <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(32,30,31,0.38)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '3px' }}>
           Latest Post
         </div>
         {meta === null ? (
-          <div style={{ fontSize: '12px', color: '#CCC' }}>Loading…</div>
+          <div style={{ fontSize: '12px', color: 'rgba(32,30,31,0.25)' }}>Loading…</div>
         ) : meta.error ? (
-          <div style={{ fontSize: '12px', color: '#999' }}>Could not fetch post metadata</div>
+          <div style={{ fontSize: '12px', color: 'rgba(32,30,31,0.4)' }}>Could not fetch post metadata</div>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-            <div style={{ fontSize: '13px', color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div style={{ fontSize: '13px', color: '#201E1F', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>
               {meta.postTitle ?? 'Unknown title'}
             </div>
             {meta.date && (
-              <div style={{ fontSize: '11px', color: '#999', flexShrink: 0 }}>{meta.date}</div>
+              <div style={{ fontSize: '11px', color: 'rgba(32,30,31,0.4)', flexShrink: 0 }}>{meta.date}</div>
             )}
           </div>
         )}
@@ -91,10 +91,10 @@ export default function BlogViewer({ company }: BlogViewerProps) {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              backgroundColor: '#FAFAFA',
+              backgroundColor: '#F7F4ED',
             }}
           >
-            <span style={{ fontSize: '13px', color: '#666' }}>Preview unavailable</span>
+            <span style={{ fontSize: '13px', color: 'rgba(32,30,31,0.5)' }}>Preview unavailable</span>
             <a
               href={company.blogUrl}
               target="_blank"
@@ -102,11 +102,12 @@ export default function BlogViewer({ company }: BlogViewerProps) {
               style={{
                 fontSize: '13px',
                 textDecoration: 'none',
-                backgroundColor: '#111',
-                color: 'white',
+                backgroundColor: '#201E1F',
+                color: '#FFFFF8',
                 padding: '8px 16px',
-                borderRadius: '6px',
-                fontWeight: 600,
+                borderRadius: '8px',
+                fontWeight: 500,
+                fontFamily: 'var(--font-sans)',
               }}
             >
               Open in browser ↗
@@ -142,13 +143,14 @@ export default function BlogViewer({ company }: BlogViewerProps) {
                 bottom: '12px',
                 right: '12px',
                 fontSize: '11px',
-                color: '#666',
-                backgroundColor: 'white',
-                border: '1px solid #E7E5E4',
+                color: 'rgba(32,30,31,0.55)',
+                backgroundColor: '#FFFFF8',
+                border: '1px solid #EDE9DC',
                 borderRadius: '5px',
                 padding: '4px 10px',
                 textDecoration: 'none',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                boxShadow: '0 1px 4px rgba(32,30,31,0.08)',
+                fontFamily: 'var(--font-sans)',
               }}
             >
               Open in browser ↗

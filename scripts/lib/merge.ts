@@ -10,13 +10,17 @@ function nextId(): string {
 export function mergeProspects(
   existing: Prospect[],
   enriched: EnrichedProspect[]
-): Prospect[] {
+): { prospects: Prospect[]; added: number; skipped: number } {
   const existingDomains = new Set(existing.map((p) => p.company.domain))
   const result = [...existing]
   let added = 0
+  let skipped = 0
 
   for (const { company, contact } of enriched) {
-    if (existingDomains.has(company.domain)) continue
+    if (existingDomains.has(company.domain)) {
+      skipped++
+      continue
+    }
 
     const companyId = nextId()
     const contactId = nextId()
@@ -45,6 +49,7 @@ export function mergeProspects(
         company: company.source,
         contact: contact?.source ?? 'manual',
         emailVerified: contact?.confidence === 'high',
+        emailConfidence: contact?.confidence,
       },
     })
 
@@ -52,5 +57,5 @@ export function mergeProspects(
     added++
   }
 
-  return result
+  return { prospects: result, added, skipped }
 }

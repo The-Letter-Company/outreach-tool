@@ -1,65 +1,72 @@
 # Outreach — Lead Enrichment Pipeline (AS OF 6/25) 
 
-Automatically validates prospects from a CSV, scores their blog, finds contacts, and constructs email addresses. Entirely free — no API keys required.
+Automatically sources prospects via Apollo, scores their blog, finds contacts, and verifies email addresses via Hunter.
 
 ---
 
-## How to add prospects
+## Quick start
 
-### Step 1 — Export a CSV
+### 1 — Get API keys
 
-**From Crunchbase (free tier)**
-1. Search for companies by stage (Seed, Series A, etc.) + industry
-2. Click a company → copy: name, domain, stage, raised amount, employee count
-3. Paste into `data/import.csv`
+**Apollo.io (free tier)**
+1. Sign up at [apollo.io](https://app.apollo.io/#/sign-up)
+2. Go to **Settings → Integrations → API** (or visit `/api-keys` in the app)
+3. Copy your API key
+4. The free tier gives you 50 export credits/month and unlimited people search
 
-**From Dealroom (free tier at app.dealroom.co)**
-1. Use filters: funding stage, HQ, team size, sector
-2. Export CSV (free tier allows limited exports)
-3. Map columns to the format below
+**Hunter.io (free tier)**
+1. Sign up at [hunter.io](https://hunter.io/users/sign_up)
+2. Go to **API → API key** in the dashboard
+3. Copy your API key
+4. The free tier gives you 25 requests/month
 
-**From LinkedIn (manual)**
-1. Search companies → filter by employee count + industry
-2. Visit each company page → note domain + funding from About tab
+### 2 — Add keys to `.env.local`
 
----
+Open `.env.local` in the project root and paste your keys:
 
-### Step 2 — Fill in the CSV
+```
+APOLLO_API_KEY=your_apollo_key_here
+HUNTER_API_KEY=your_hunter_key_here
+```
 
-Open `data/import.csv`. Required columns:
-
-| Column | Required | Example |
-|---|---|---|
-| `name` | Yes | PostHog |
-| `domain` | Yes | posthog.com |
-| `stage` | Yes | Series B |
-| `raised` | Yes | 27000000 |
-| `employees` | Yes | 50 |
-| `blogUrl` | No | https://posthog.com/blog |
-| `contactName` | No | James Hawkins |
-| `contactTitle` | No | Head of Content |
-| `contactEmail` | No | james@posthog.com |
-
-- `stage` must be exactly one of: `Seed`, `Series A`, `Series B`, `Series C`
-- `raised` is the total raised in dollars (no $ sign, no commas)
-- `blogUrl`, `contactName`, `contactTitle`, `contactEmail` are optional — the pipeline will attempt to find them automatically
+Restart the dev server after editing `.env.local`.
 
 ---
 
-### Step 3 — Run the pipeline
+## Running the pipeline
+
+### Via the app
+
+Click **+ Add Prospects** in the top bar. A modal shows live stage-by-stage progress.
+
+### Via CLI
 
 ```bash
 npm run enrich
 ```
 
-This will:
-1. Read and validate companies from `data/import.csv`
-2. Find and score each company's blog (0–100)
-3. Scrape `/about` and `/team` pages for contacts
-4. Construct email address patterns + verify domain has MX records
-5. Merge new prospects into `data/prospects.json` (existing prospects are never overwritten)
+Logs timing and API credit usage for each stage.
 
-Or click **+ Add Prospects** in the app — same pipeline, live progress modal.
+---
+
+## Pipeline stages
+
+| Stage | What it does | API used |
+|-------|-------------|---------|
+| **1 — Source** | Queries Apollo for 20 companies: seed–Series C, 11–200 employees, $5M+ raised | Apollo (1 credit) |
+| **2 — Score blogs** | Fetches each blog, scores 0–100 on recency, length, editorial voice, niche depth | Free (HTTP fetch) |
+| **3 — Find contacts** | Searches Apollo for Head of Content / VP Marketing at each company | Apollo (~1 credit/company) |
+| **4 — Verify emails** | Verifies via Hunter; falls back to domain search; falls back to guessed pattern | Hunter (~1–2 lookups/contact) |
+
+---
+
+## Email confidence badges
+
+| Badge | Meaning |
+|-------|---------|
+| **✓ Verified** (green) | Hunter returned `valid` or `accept_all` |
+| **~ Likely** (amber) | Hunter returned `risky` — probably deliverable |
+| **? Unverified** (gray) | Email was guessed from name pattern — check before sending |
 
 ---
 
@@ -67,8 +74,8 @@ Or click **+ Add Prospects** in the app — same pipeline, live progress modal.
 
 Companies are automatically skipped if they don't match:
 - Funding stage: Seed to Series C
+- Employees: 11–200
 - Raised: minimum $5M
-- Employees: 10–500
 - Blog score: 40+ / 100
 
 Blog score rubric:
@@ -79,23 +86,23 @@ Blog score rubric:
 
 ---
 
-## What the badges mean
+## Cost estimates
 
-| Badge | Meaning |
-|---|---|
-| **CSV** | Company came from `data/import.csv` |
-| **Manual** | Company or contact was manually entered |
-| **Scraped** | Contact name/title was scraped from the company's /about or /team page |
-| **Unverified email** | Email was constructed from name pattern (e.g. `james@domain.com`) — MX records confirmed the domain accepts email, but the address itself is unverified. Check before sending. |
-| **Contact needed** | No contact was found — add one manually before drafting |
+Per pipeline run (20 companies in, ~10–12 through blog filter, ~8–10 with contacts):
+
+| Resource | Est. usage |
+|----------|-----------|
+| Apollo credits (org search) | 1 |
+| Apollo credits (people search) | ~10–12 |
+| Hunter lookups | ~16–24 |
 
 ---
 
-## Cost
+## What the source badges mean
 
-$0. The pipeline uses only:
-- HTTP fetch (blog scraping)
-- DNS MX lookup (email domain check)
-- CSV file reading
-
-No API keys. No paid services. The tradeoff is that email addresses are unverified — always check before sending.
+| Badge | Meaning |
+|-------|---------|
+| **CSV** | Sourced via Apollo (type label kept for compatibility) |
+| **Scraped** | Contact found via Apollo people search |
+| **Manual** | Contact was manually entered |
+| **Contact needed** | No contact found — add one manually before drafting |

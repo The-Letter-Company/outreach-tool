@@ -28,10 +28,14 @@ export interface Prospect {
   source?: ProspectSource
 }
 
+export type ContactConfidence = 'high' | 'medium' | 'low'
+export type ContactSource = 'scraped' | 'constructed' | 'manual'
+
 export interface ProspectSource {
   company: 'csv' | 'manual'
-  contact: 'scraped' | 'constructed' | 'manual'
+  contact: ContactSource
   emailVerified: boolean
+  emailConfidence?: ContactConfidence
 }
 
 export interface EmailTemplate {
@@ -66,9 +70,6 @@ export interface ValidatedCompany extends RawCompany {
   blogScoreReason: string
   recentPosts: BlogPost[]
 }
-
-export type ContactConfidence = 'high' | 'medium' | 'low'
-export type ContactSource = 'scraped' | 'constructed' | 'manual'
 
 export interface PipelineContact {
   name: string

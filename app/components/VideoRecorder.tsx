@@ -92,19 +92,19 @@ export default function VideoRecorder({ companyName, onRecorded }: VideoRecorder
               animation: 'pulse 1s ease-in-out infinite',
             }}
           />
-          <span style={{ fontSize: '11px', color: '#666', fontFamily: 'monospace' }}>
+          <span style={{ fontSize: '11px', color: 'rgba(32,30,31,0.45)', fontFamily: 'ui-monospace, monospace' }}>
             {formatTime(elapsed)}
           </span>
           <button
             onClick={stopRecording}
             style={{
               fontSize: '11px',
-              color: '#666',
+              color: 'rgba(32,30,31,0.45)',
               background: 'none',
               border: 'none',
               cursor: 'pointer',
               padding: '0',
-              fontFamily: 'inherit',
+              fontFamily: 'var(--font-sans)',
             }}
           >
             ◼ Stop
@@ -115,12 +115,12 @@ export default function VideoRecorder({ companyName, onRecorded }: VideoRecorder
           onClick={startRecording}
           style={{
             fontSize: '11px',
-            color: '#666',
+            color: 'rgba(32,30,31,0.38)',
             background: 'none',
             border: 'none',
             cursor: 'pointer',
             padding: '0',
-            fontFamily: 'inherit',
+            fontFamily: 'var(--font-sans)',
           }}
         >
           ⏺ Record
