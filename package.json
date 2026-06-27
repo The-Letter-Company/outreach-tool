@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "enrich": "npx tsx scripts/enrich.ts",
-    "seed": "npx tsx scripts/seed-supabase.ts"
+    "enrich": "npx tsx --env-file=.env.local scripts/enrich.ts",
+    "seed": "npx tsx --env-file=.env.local scripts/seed-supabase.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
