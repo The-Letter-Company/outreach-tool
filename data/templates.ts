@@ -7,7 +7,7 @@ export const templates: EmailTemplate[] = [
     subject: "Quick note re: [Company]'s content",
     body: `Hi [FirstName],
 
-[CUSTOM_LINE]
+I've been reading [Company]'s blog — [write one specific observation about a recent post here].
 
 We help editorial teams turn their existing content into a growth channel. Happy to share what's worked for teams like yours.
 
@@ -25,7 +25,7 @@ Worth a quick call?
 
 Congrats on the recent round — exciting milestone.
 
-[CUSTOM_LINE]
+I've been following [Company]'s content — [write one specific observation here].
 
 We work with funded teams scaling their content ops.
 
@@ -43,7 +43,7 @@ Open to a 20-min chat?
 
 I'm the founder of Letterstory — our platform helps teams produce editorial-grade longform content for their marketing site. We work with folks like PostHog, Runlayer, Archil, Credal, and others.
 
-One of our strengths is enhancing existing content to perform better on SEO/GEO and convert more readers. [CUSTOM_LINE]
+One of our strengths is enhancing existing content to perform better on SEO/GEO and convert more readers. I'd love to do that with [write one specific post or topic from their blog here].
 
 [VIDEO]
 

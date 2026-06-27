@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "enrich": "npx tsx scripts/enrich.ts"
+    "enrich": "npx tsx --env-file=.env.local scripts/enrich.ts"
   },
   "dependencies": {
     "next": "16.2.9",
