@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { Prospect, ProspectSource } from '@/types'
-import prospectData from '@/data/prospects.json'
 import BlogViewer from '@/app/components/BlogViewer'
 import TemplateSelector from '@/app/components/TemplateSelector'
 import EmailComposer from '@/app/components/EmailComposer'
@@ -64,10 +63,33 @@ function sourceBadges(source: ProspectSource | undefined, email: string) {
   return badges
 }
 
+async function reloadProspects(): Promise<Prospect[]> {
+  const res = await fetch('/api/prospects')
+  if (!res.ok) return []
+  const data = await res.json() as { prospects: Prospect[] }
+  return data.prospects ?? []
+}
+
+interface ProspectStatePatch {
+  status?: Prospect['status']
+  selectedTemplateId?: string
+}
+
+// Fire-and-forget persistence of review state to Supabase.
+async function persistState(companyId: string, patch: ProspectStatePatch): Promise<void> {
+  try {
+    await fetch('/api/prospects', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ companyId, ...patch }),
+    })
+  } catch {
+    // Optimistic UI already updated; a failed write is non-fatal for the session.
+  }
+}
+
 export default function Home() {
-  const [prospects, setProspects] = useState<Prospect[]>(
-    prospectData.prospects as Prospect[]
-  )
+  const [prospects, setProspects] = useState<Prospect[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | undefined>(undefined)
   const [copied, setCopied] = useState(false)
@@ -98,6 +120,7 @@ export default function Home() {
     setProspects((prev) =>
       prev.map((p) => p.company.id === current.company.id ? { ...p, status: 'archived' as const } : p)
     )
+    persistState(current.company.id, { status: 'archived' })
     advance()
   }, [current, advance])
 
@@ -110,8 +133,14 @@ export default function Home() {
           : p
       )
     )
+    persistState(current.company.id, { status: 'drafted', selectedTemplateId })
     advance()
   }, [current, advance, selectedTemplateId])
+
+  // Load persisted prospects from Supabase on mount.
+  useEffect(() => {
+    reloadProspects().then((fresh) => setProspects(fresh))
+  }, [])
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {

@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import { NextResponse } from 'next/server'
 import { sourceCompanies } from '@/scripts/lib/stage1-source'
@@ -6,19 +5,12 @@ import { validateBlogs } from '@/scripts/lib/stage2-blog'
 import { findContact } from '@/scripts/lib/stage3-contact'
 import { resolveEmail } from '@/scripts/lib/stage4-email'
 import { mergeProspects } from '@/scripts/lib/merge'
-import { Prospect, PipelineProgress, PipelineContact, ValidatedCompany } from '@/types'
+import { getProspects, upsertProspects } from '@/lib/prospects-store'
+import { EnrichedProspect, PipelineProgress, PipelineContact, ValidatedCompany } from '@/types'
 
-const PROSPECTS_PATH = path.join(process.cwd(), 'data', 'prospects.json')
-const VALIDATED_PATH = path.join(process.cwd(), 'data', 'pipeline', 'validated.json')
+export const dynamic = 'force-dynamic'
 
-function loadProspects(): Prospect[] {
-  try {
-    const raw = JSON.parse(fs.readFileSync(PROSPECTS_PATH, 'utf-8')) as { prospects: Prospect[] }
-    return raw.prospects ?? []
-  } catch {
-    return []
-  }
-}
+const CSV_PATH = path.join(process.cwd(), 'data', 'import.csv')
 
 function sse(event: PipelineProgress): string {
   return `data: ${JSON.stringify(event)}\n\n`
@@ -52,8 +44,6 @@ export async function POST(): Promise<Response> {
         // Stage 2 — Blog scoring
         emit({ stage: 'validating', message: `Scoring blogs for ${companies.length} companies…`, total: companies.length })
         const { validated, skipped: s2Skip } = await validateBlogs(companies)
-        fs.mkdirSync(path.dirname(VALIDATED_PATH), { recursive: true })
-        fs.writeFileSync(VALIDATED_PATH, JSON.stringify(validated, null, 2))
         emit({
           stage: 'validating',
           message: `${validated.length} passed (${s2Skip.length} filtered out)`,
@@ -93,15 +83,17 @@ export async function POST(): Promise<Response> {
         const foundEmails = enriched.filter((e) => e.contact?.email).length
         emit({ stage: 'emails', message: `${foundEmails} verified`, found: foundEmails, total: foundContacts })
 
-        // Merge
-        const existing = loadProspects()
-        const { prospects: merged, added, skipped: dupSkipped } = mergeProspects(existing, enriched)
-        fs.writeFileSync(PROSPECTS_PATH, JSON.stringify({ prospects: merged }, null, 2))
+        // Merge into the database (skips companies whose domain already exists)
+        const existing = await getProspects()
+        const merged = mergeProspects(existing, enriched)
+        const newProspects = merged.slice(existing.length)
+        await upsertProspects(newProspects)
+        const added = newProspects.length
 
         emit({
           stage: 'done',
           message: added > 0
-            ? `${added} new prospect${added !== 1 ? 's' : ''} added to your queue (${dupSkipped} duplicate${dupSkipped !== 1 ? 's' : ''} skipped)`
+            ? `${added} new prospect${added !== 1 ? 's' : ''} added to your queue`
             : 'No new prospects — all companies already in queue',
           found: added,
         })
